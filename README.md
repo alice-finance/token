@@ -9,9 +9,9 @@ Below contracts are deployed on Loom Network's [PlasmaChain](https://loomx.io/de
 
 | Contract                    | Address                                                                                                                                     |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| AliceFund                   | [0xc1bea036f63e88d65306e8513db9bfee5d8b5268](http://plasma-blockexplorer.dappchains.com/address/0xc1bea036f63e88d65306e8513db9bfee5d8b5268) |
-| AliceIFO                    | [0xc7bb19a92c1a050087b0633c6e4cb4bf363053d9](http://plasma-blockexplorer.dappchains.com/address/0xc7bb19a92c1a050087b0633c6e4cb4bf363053d9) |
-| AlicePlasma                 | [0x60f27e0a85c1f923ea29967c847245149d46cfee](http://plasma-blockexplorer.dappchains.com/address/0x60f27e0a85c1f923ea29967c847245149d46cfee) |
+| AliceFund                   | [0xc1bea036f63e88d65306e8513db9bfee5d8b5268](http://loom-blockexplorer.dappchains.com/address/0xc1bea036f63e88d65306e8513db9bfee5d8b5268) |
+| AliceIFO                    | [0xc7bb19a92c1a050087b0633c6e4cb4bf363053d9](http://loom-blockexplorer.dappchains.com/address/0xc7bb19a92c1a050087b0633c6e4cb4bf363053d9) |
+| AlicePlasma                 | [0x60f27e0a85c1f923ea29967c847245149d46cfee](http://loom-blockexplorer.dappchains.com/address/0x60f27e0a85c1f923ea29967c847245149d46cfee) |
 
 And below contracts are deployed on Ethereum Network
 
