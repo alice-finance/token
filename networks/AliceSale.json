@@ -1,0 +1,55 @@
+{
+  "9545242630824": {
+    "events": {
+      "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "to",
+            "type": "address"
+          }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event",
+        "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+      },
+      "0x4c8fb816da2cf6f57a7a5fb0b54fbc385c5f5ce17bacf25520a4f356fee7f400": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "user",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "daiAmount",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "aliceAmount",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "name": "AlicePurchased",
+        "type": "event",
+        "signature": "0x4c8fb816da2cf6f57a7a5fb0b54fbc385c5f5ce17bacf25520a4f356fee7f400"
+      }
+    },
+    "links": {},
+    "address": "0x3F2a05f7075290649EcD57C78B3460BD12B5A8A6",
+    "transactionHash": "0x752bc8226836136a8f0698a489bc80ffd93fe2c064a1672136d7a77b50d1979a"
+  }
+}
