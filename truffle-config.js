@@ -29,11 +29,18 @@ const HDWalletProvider = require("truffle-hdwallet-provider");
 
 module.exports = {
   networks: {
+    coverage: {
+      host: "localhost",
+      port: 8555,
+      gas: 0xfffffffffff,
+      gasPrice: 0x01,
+      network_id: "*"
+    },
     mainnet: {
       provider: () =>
         new HDWalletProvider(
           process.env.ETHEREUM_ADMIN_PRIVATE_KEY,
-          "https://mainnet.infura.io/v3/" + process.env.RINKEBY_PROJECT_ID
+          "https://mainnet.infura.io/v3/" + process.env.INFURA_PROJECT_ID
         ),
       network_id: 1
     },
@@ -41,7 +48,7 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(
           process.env.ETHEREUM_ADMIN_PRIVATE_KEY,
-          "https://rinkeby.infura.io/v3/" + process.env.RINKEBY_PROJECT_ID
+          "https://rinkeby.infura.io/v3/" + process.env.INFURA_PROJECT_ID
         ),
       network_id: 4
     },
@@ -85,5 +92,6 @@ module.exports = {
         evmVersion: "byzantium" // Need to set 'byzantium' due to PlasmaChain EVM version
       }
     }
-  }
+  },
+  plugins: ["truffle-security"]
 };
