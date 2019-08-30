@@ -3,6 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import "./IMoneyMarket.sol";
 
+// TODO: add ability to set length of invitation code
+// TODO: change type of code from bytes3 to bytes
+// TODO: Change word "invite" to "redeem" on methods
+// TODO: change "address" from function arguments into "code"
 contract InvitationRepository {
     event InvitationCodeGenerated(
         address indexed account,
@@ -38,9 +42,9 @@ contract InvitationRepository {
         _amountPerInvitee = amountPerInvitee;
     }
 
-    function codeOf(address account) public view returns (bytes3) {
-        return _codes[account];
-    }
+    //    function codeOf(address account) public view returns (bytes3) {
+    //        return _codes[account];
+    //    }
 
     function userOf(bytes3 code) public view returns (address) {
         return _reverseCodes[code];
@@ -87,14 +91,20 @@ contract InvitationRepository {
         return _inviterList.length;
     }
 
-    function registerCode(bytes3 code) public returns (bool) {
+    // TODO:
+    function redeem(bytes32 promoCode, bytes signature) {
         require(
             _registered[msg.sender] != true,
             "InviteCode: already registered"
         );
-        address currentInviter = _reverseCodes[code];
+
+        address currentInviter = bytes20(promoCode);
+        uint96 index = bytes12(promoCode << 20);
+        (uint8 v, bytes32 r, bytes32 s) = _extractSignature(signature);
+        require(ecrecover(promoCode, v, r, s) == currentInviter);
+
         require(
-            inviteeCount(currentInviter) < maxInviteeCount(currentInviter),
+            index < maxInviteeCount(currentInviter),
             "InviteCode: this code cannot be used"
         );
 
@@ -103,37 +113,28 @@ contract InvitationRepository {
         _registered[msg.sender] = true;
 
         _totalRegistered = _totalRegistered + 1;
-
-        return true;
     }
 
-    function generateCode() public returns (bytes3) {
-        if (_codes[msg.sender] == bytes3(0)) {
-            bytes3 code = bytes3(0);
+    function _extractSignature(bytes memory signature)
+        internal
+        pure
+        returns (uint8, bytes32, bytes32)
+    {
+        uint8 v;
+        bytes32 r;
+        bytes32 s;
 
-            for (uint256 pos = 0; pos <= 34; pos++) {
-                code = _generateCode(msg.sender, pos);
-                if (_reverseCodes[code] == address(0) && code != bytes3(0)) {
-                    _reverseCodes[code] = msg.sender;
-                    _codes[msg.sender] = code;
-                    _inviterList.push(msg.sender);
-
-                    emit InvitationCodeGenerated(
-                        msg.sender,
-                        code,
-                        block.timestamp
-                    );
-                    break;
-                }
-            }
-
-            require(
-                _codes[msg.sender] != bytes3(0),
-                "InviteCote: all codes are duplicated"
-            );
+        assembly {
+            r := mload(add(signature, 32))
+            s := mload(add(signature, 64))
+            v := and(mload(add(signature, 65)), 255)
         }
 
-        return _codes[msg.sender];
+        if (v < 27) {
+            v += 27;
+        }
+
+        return (v, r, s);
     }
 
     function _generateCode(address account, uint256 pos)

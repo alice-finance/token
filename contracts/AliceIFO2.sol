@@ -6,6 +6,7 @@ import "./IAliceFund.sol";
 import "./lib/SafeMath.sol";
 import "./token/IERC20.sol";
 import "./InvitationRepository.sol";
+import "./AliceIFO.sol";
 
 contract AliceIFO2 {
     using SafeMath for uint256;
@@ -21,10 +22,12 @@ contract AliceIFO2 {
         uint256 timestamp;
     }
 
+    uint256 private _logBase;
+    AliceIFO private _previousIFO;
     InvitationRepository private _invitationRepository;
     uint256 private _halfLife;
     uint256 private _interval;
-    address private _market;
+    IMoneyMarket private _market;
     address private _alice;
     IAliceFund private _fund;
     uint256 private _startsAt;
@@ -54,21 +57,25 @@ contract AliceIFO2 {
 
     constructor(
         address marketAddress,
+        address previousAddress,
         address invitationRepositoryAddress,
         address aliceAddress,
         address fundAddress,
         uint256 halfLife,
         uint256 interval,
+        uint256 logBase,
         uint256 startsAt
     ) public {
-        _market = marketAddress;
+        _market = IMoneyMarket(marketAddress);
         _invitationRepository = InvitationRepository(
             invitationRepositoryAddress
         );
+        _previousIFO = AliceIFO(previousAddress);
         _alice = aliceAddress;
         _fund = IAliceFund(fundAddress);
         _halfLife = halfLife;
         _interval = interval;
+        _logBase = logBase;
         _startsAt = startsAt;
     }
 
@@ -81,7 +88,7 @@ contract AliceIFO2 {
         return _startsAt;
     }
 
-    function getMoneyMarket() public view returns (address) {
+    function getMoneyMarket() public view returns (IMoneyMarket) {
         return _market;
     }
 
@@ -105,7 +112,11 @@ contract AliceIFO2 {
         return _totalClaimed;
     }
 
-    function claim(uint256 recordId) public isStarted returns (bool) {
+    function claim(uint256 recordId, bytes code)
+        public
+        isStarted
+        returns (bool)
+    {
         IMoneyMarket.SavingsRecord memory record = IMoneyMarket(_market)
             .getSavingsRecord(recordId);
 
@@ -133,7 +144,7 @@ contract AliceIFO2 {
         claimRecord.recordId = record.id;
         claimRecord.claimId = claimId;
         claimRecord.balance = record.balance;
-        claimRecord.amount = _getClaimAmount(record.balance);
+        claimRecord.amount = _getClaimAmount(record.balance, code);
         claimRecord.timestamp = block.timestamp;
 
         _userClaimList[msg.sender].push(claimId);
@@ -216,7 +227,7 @@ contract AliceIFO2 {
         return _lastClaimTimestamp[record.owner][recordId];
     }
 
-    function getClaimableAmount(uint256 recordId)
+    function getClaimableAmount(uint256 recordId, bytes code)
         public
         view
         returns (uint256)
@@ -224,7 +235,7 @@ contract AliceIFO2 {
         IMoneyMarket.SavingsRecord memory record = IMoneyMarket(_market)
             .getSavingsRecord(recordId);
 
-        return _getClaimAmount(record.balance);
+        return _getClaimAmount(record.balance, code);
     }
 
     function getClaimRate() public view returns (uint256) {
@@ -235,14 +246,19 @@ contract AliceIFO2 {
         return _getClaimRound();
     }
 
-    function _getClaimAmount(uint256 balance) internal view returns (uint256) {
+    function _getClaimAmount(uint256 balance, bytes code)
+        internal
+        view
+        returns (uint256)
+    {
         if (balance == 0) {
             return 0;
         }
 
         uint256 rate = _getClaimRate();
+        uint256 claimable = _getClaimableAmount(balance, code);
 
-        return balance.mul(rate).div(10 ** 18);
+        return claimable.mul(rate).div(10 ** 18);
     }
 
     function _getClaimRate() public view returns (uint256) {
@@ -267,5 +283,49 @@ contract AliceIFO2 {
         }
 
         return round;
+    }
+
+    function _getClaimableAmount(uint256 balance, bytes code)
+        internal
+        view
+        returns (uint256)
+    {
+        if (_invitationRepository.inviteeCount(account) > 0) {
+            uint256 total = 0;
+            address[] memory invitees = _invitationRepository.invitees(account);
+
+            for (uint256 i = 0; i < invitees.length; i++) {
+                total = total + _getSavingsBalanceOf(invitees);
+            }
+
+            if (total > balance) {
+                uint256 r = _calculateLog(total, _logBase);
+                if (r > MULTIPLIER) {
+                    return balance.mul(r).div(MULTIPLIER);
+                }
+            }
+        }
+
+        return balance;
+    }
+
+    function _getSavingsBalanceOf(address account)
+        internal
+        view
+        returns (uint256)
+    {
+        IMoneyMarket.SavingsRecord[] memory records = _market.getSavingsRecords(
+            account
+        );
+        uint256 total = 0;
+        for (uint256 i = 0; i < records.length; i++) {
+            total = total + records[i].balance;
+        }
+
+        return total;
+    }
+
+    function _calculateLog(uint256 value, uint256 base) internal pure returns (uint256) {
+        return MULTIPLIER;
     }
 }
