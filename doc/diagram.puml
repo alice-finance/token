@@ -1,4 +1,4 @@
-```uml
+@startuml
 class IAliceFund {
 + totalTransferred()
 + transfer(address to, uint256 amount)
@@ -45,4 +45,4 @@ AliceFund *- AliceIFOWithInvitation : have 1 >
 AliceIFOWithInvitation *- AliceFund : have 1 >
 AliceIFOWithInvitation *- ISavings : have 1>
 AliceIFOWithInvitation *- IInvitationManager: have 1>
-```
+@enduml
