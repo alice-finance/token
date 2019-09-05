@@ -1,0 +1,48 @@
+```uml
+class IAliceFund {
++ totalTransferred()
++ transfer(address to, uint256 amount)
+}
+
+class AliceIFO {
++ getStartsAt()
++ getMoneyMarket()
++ getAliceToken()
++ getFund()
++ getHalfLife()
++ getInterval()
++ totalClaimed()
++ claim(uint256 recordId)
++ getClaims(address user)
++ getTotalClaims(address user)
++ getClaimsBySavings(uint256 recordId)
++ getTotalClaimsBySavings(uint256 recordId)
++ getLastClaimTimestamp(uint256 recordId)
++ getClaimableAmount(uint256 recordId)
++ getClaimRate()
++ getClaimRound()
+}
+
+class AliceIFOWithInvitation {
+
+}
+
+class AliceFund {
++ owner()
++ ifo()
++ isOwner()
++ hasIFO()
++ isIFO()
++ totalTransferred()
++ transferOwnership(address newOwner)
++ changeIFO(address newIFO)
++ deposit(uint256 amount)
++ transfer(address to, uint256 amount)
+}
+IAliceFund <|-- AliceFund
+AliceIFO <|-- AliceIFOWithInvitation
+AliceFund *- AliceIFOWithInvitation : have 1 >
+AliceIFOWithInvitation *- AliceFund : have 1 >
+AliceIFOWithInvitation *- ISavings : have 1>
+AliceIFOWithInvitation *- IInvitationManager: have 1>
+```
