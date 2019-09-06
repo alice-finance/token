@@ -1,7 +1,7 @@
 pragma solidity 0.5.8;
 pragma experimental ABIEncoderV2;
 
-import "./IMoneyMarket.sol";
+import "./money-market/IMoneyMarket.sol";
 import "./IAliceFund.sol";
 import "./lib/SafeMath.sol";
 import "./token/IERC20.sol";
@@ -9,7 +9,7 @@ import "./token/IERC20.sol";
 contract AliceIFO {
     using SafeMath for uint256;
 
-    uint256 private constant MULTIPLIER = 10 ** 18;
+    uint256 internal constant MULTIPLIER = 10 ** 18;
 
     struct ClaimRecord {
         address user;
@@ -20,24 +20,24 @@ contract AliceIFO {
         uint256 timestamp;
     }
 
-    uint256 private _halfLife;
-    uint256 private _interval;
-    address private _market;
-    address private _alice;
-    IAliceFund private _fund;
-    uint256 private _startsAt;
+    uint256 internal _halfLife;
+    uint256 internal _interval;
+    address internal _market;
+    address internal _alice;
+    IAliceFund internal _fund;
+    uint256 internal _startsAt;
 
-    ClaimRecord[] private _claimList;
+    ClaimRecord[] internal _claimList;
     // mapping (user => recordId => round => isClaimed)
-    mapping(address => mapping(uint256 => uint256)) private _lastClaimTimestamp;
+    mapping(address => mapping(uint256 => uint256)) internal _lastClaimTimestamp;
     // mapping (user => claimIndex[])
-    mapping(address => uint256[]) private _userClaimList;
+    mapping(address => uint256[]) internal _userClaimList;
     // mapping (user => claimedAmount)
-    mapping(address => uint256) private _userTotalClaimAmount;
+    mapping(address => uint256) internal _userTotalClaimAmount;
     // mapping (recordId => claimIndex[])
-    mapping(uint256 => uint256[]) private _recordClaimList;
+    mapping(uint256 => uint256[]) internal _recordClaimList;
     // mapping (recordId => claimedAmount)
-    mapping(uint256 => uint256) private _recordTotalClaimAmount;
+    mapping(uint256 => uint256) internal _recordTotalClaimAmount;
 
     uint256 internal _totalClaimed = 0;
 

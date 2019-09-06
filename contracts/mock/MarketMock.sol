@@ -1,7 +1,7 @@
 pragma solidity 0.5.8;
 pragma experimental ABIEncoderV2;
 
-import "../IMoneyMarket.sol";
+import "../money-market/IMoneyMarket.sol";
 
 contract MarketMock is IMoneyMarket {
     mapping(uint256 => SavingsRecord) private _record;

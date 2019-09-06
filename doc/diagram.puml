@@ -1,48 +1,61 @@
 @startuml
-class IAliceFund {
-+ totalTransferred()
-+ transfer(address to, uint256 amount)
-}
 
-class AliceIFO {
-+ getStartsAt()
-+ getMoneyMarket()
-+ getAliceToken()
-+ getFund()
-+ getHalfLife()
-+ getInterval()
-+ totalClaimed()
-+ claim(uint256 recordId)
-+ getClaims(address user)
-+ getTotalClaims(address user)
-+ getClaimsBySavings(uint256 recordId)
-+ getTotalClaimsBySavings(uint256 recordId)
-+ getLastClaimTimestamp(uint256 recordId)
-+ getClaimableAmount(uint256 recordId)
-+ getClaimRate()
-+ getClaimRound()
-}
-
-class AliceIFOWithInvitation {
-
+interface IAliceFund {
+    + totalTransferred()
+    + transfer(address to, uint256 amount)
 }
 
 class AliceFund {
-+ owner()
-+ ifo()
-+ isOwner()
-+ hasIFO()
-+ isIFO()
-+ totalTransferred()
-+ transferOwnership(address newOwner)
-+ changeIFO(address newIFO)
-+ deposit(uint256 amount)
-+ transfer(address to, uint256 amount)
+    + owner()
+    + ifo()
+    + isOwner()
+    + hasIFO()
+    + isIFO()
+    + totalTransferred()
+    + transferOwnership(address newOwner)
+    + changeIFO(address newIFO)
+    + deposit(uint256 amount)
+    + transfer(address to, uint256 amount)
 }
+
+class MoneyMarket
+
+class AliceIFO {
+    + getStartsAt()
+    + getMoneyMarket()
+    + getAliceToken()
+    + getFund()
+    + getHalfLife()
+    + getInterval()
+    + totalClaimed()
+    + claim(uint256 recordId)
+    + getClaims(address user)
+    + getTotalClaims(address user)
+    + getClaimsBySavings(uint256 recordId)
+    + getTotalClaimsBySavings(uint256 recordId)
+    + getLastClaimTimestamp(uint256 recordId)
+    + getClaimableAmount(uint256 recordId)
+    + getClaimRate()
+    + getClaimRound()
+}
+
+class AliceIFOWithInvitation extends AliceIFO {
+    + logBase()
+    + getMoneyMarket()
+    + totalClaimed()
+    + claim(uint256 recordId)
+    + getClaims(address user)
+    + getTotalClaims(address user)
+    + getClaimsBySavings(uint256 recordId)
+    + getTotalClaimsBySavings(uint256 recordId)
+    + getLastClaimTimestamp(uint256 recordId)
+    + getClaimableAmount(uint256 recordId)
+    + getClaimRate()
+    + getClaimRound()
+}
+
+
 IAliceFund <|-- AliceFund
-AliceIFO <|-- AliceIFOWithInvitation
-AliceFund *- AliceIFOWithInvitation : have 1 >
-AliceIFOWithInvitation *- AliceFund : have 1 >
-AliceIFOWithInvitation *- ISavings : have 1>
-AliceIFOWithInvitation *- IInvitationManager: have 1>
+AliceIFOWithInvitation *- MoneyMarket : have 1
+AliceFund *-* AliceIFOWithInvitation : have 1
 @enduml
