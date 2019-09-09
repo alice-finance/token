@@ -1,12 +1,14 @@
 pragma solidity 0.5.8;
 pragma experimental ABIEncoderV2;
 
-import "./AliceIFO.sol";
 import "./lib/SafeMath.sol";
 import "./money-market/ISavings.sol";
 import "./money-market/IInvitationManager.sol";
 
-contract AliceIFOWithInvitation is AliceIFO {
+import "./AliceIFO.sol";
+import "./math/Logarithm.sol";
+
+contract AliceIFOWithInvitation is AliceIFO, Logarithm {
     using SafeMath for uint256;
 
     AliceIFO internal _previousIFO;
@@ -236,8 +238,8 @@ contract AliceIFOWithInvitation is AliceIFO {
                 total = total + _getSavingsBalanceOf(redeemers[i]);
             }
 
-            if (total > balance) {
-                uint256 r = _calculateLog(total, _logBase);
+            if (total > balance && total > _logBase) {
+                uint256 r = log25(total);
                 if (r > MULTIPLIER) {
                     return balance.mul(r).div(MULTIPLIER);
                 }
@@ -260,14 +262,5 @@ contract AliceIFOWithInvitation is AliceIFO {
         }
 
         return total;
-    }
-
-    function _calculateLog(uint256 value, uint256 base)
-        internal
-        pure
-        returns (uint256)
-    {
-        // TODO: Should implement this
-        return MULTIPLIER;
     }
 }
